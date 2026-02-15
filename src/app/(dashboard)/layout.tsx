@@ -53,6 +53,12 @@ export default async function DashboardLayout({
                   Focus
                 </Link>
                 <Link
+                  href="/practice"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary"
+                >
+                  Practice
+                </Link>
+                <Link
                   href="/courses"
                   className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary"
                 >

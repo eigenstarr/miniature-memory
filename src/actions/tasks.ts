@@ -122,7 +122,7 @@ export async function createTask(formData: FormData) {
   const estimatedMinutes = formData.get('estimatedMinutes') as string;
 
   try {
-    await supabase.from('tasks').insert({
+    const { data, error } = await supabase.from('tasks').insert({
       user_id: user.id,
       course_id: courseId || null,
       course_unit_id: courseUnitId || null,
@@ -137,9 +137,15 @@ export async function createTask(formData: FormData) {
       updated_at: new Date().toISOString(),
     });
 
+    if (error) {
+      console.error('Supabase error creating task:', error);
+      return { error: error.message };
+    }
+
     revalidatePath('/quest-board');
     return { success: true };
   } catch (error: any) {
+    console.error('Error creating task:', error);
     return { error: error.message };
   }
 }
@@ -161,7 +167,7 @@ export async function updateTask(taskId: string, formData: FormData) {
   const status = formData.get('status') as string;
 
   try {
-    await supabase
+    const { error } = await supabase
       .from('tasks')
       .update({
         title,
@@ -174,9 +180,15 @@ export async function updateTask(taskId: string, formData: FormData) {
       .eq('id', taskId)
       .eq('user_id', user.id);
 
+    if (error) {
+      console.error('Supabase error updating task:', error);
+      return { error: error.message };
+    }
+
     revalidatePath('/quest-board');
     return { success: true };
   } catch (error: any) {
+    console.error('Error updating task:', error);
     return { error: error.message };
   }
 }
@@ -192,7 +204,7 @@ export async function completeTask(taskId: string) {
   }
 
   try {
-    await supabase
+    const { error } = await supabase
       .from('tasks')
       .update({
         status: 'completed',
@@ -202,9 +214,15 @@ export async function completeTask(taskId: string) {
       .eq('id', taskId)
       .eq('user_id', user.id);
 
+    if (error) {
+      console.error('Supabase error completing task:', error);
+      return { error: error.message };
+    }
+
     revalidatePath('/quest-board');
     return { success: true };
   } catch (error: any) {
+    console.error('Error completing task:', error);
     return { error: error.message };
   }
 }

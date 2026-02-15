@@ -89,6 +89,8 @@ export const tasks = pgTable('tasks', {
   userId: uuid('user_id')
     .references(() => users.id, { onDelete: 'cascade' })
     .notNull(),
+  courseId: uuid('course_id')
+    .references(() => courses.id, { onDelete: 'cascade' }),
   projectId: uuid('project_id')
     .references(() => projects.id, { onDelete: 'set null' }),
   courseUnitId: uuid('course_unit_id')
@@ -96,6 +98,7 @@ export const tasks = pgTable('tasks', {
   title: text('title').notNull(),
   description: text('description'),
   taskType: text('task_type').notNull(), // 'assignment_work', 'exam_build', 'timed_practice'
+  status: text('status').default('todo').notNull(), // 'todo', 'in_progress', 'completed'
   estimatedMinutes: integer('estimated_minutes').default(30),
   dueDate: date('due_date'),
   completedAt: timestamp('completed_at'),

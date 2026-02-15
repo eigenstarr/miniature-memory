@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import { updateUnitMastery } from '@/lib/analytics/mastery';
 
 /**
  * Log a focus session and award XP to the user
@@ -102,12 +103,18 @@ export async function logFocusSession(
         .eq('user_id', user.id);
     }
 
+    // Update unit mastery if this session was for a specific unit
+    if (courseUnitId) {
+      await updateUnitMastery(user.id, courseUnitId);
+    }
+
     // Update streak (if studied today)
     await updateStreak(user.id);
 
     revalidatePath('/quest-board');
     revalidatePath('/focus');
     revalidatePath('/dashboard');
+    revalidatePath('/courses');
 
     return {
       success: true,
